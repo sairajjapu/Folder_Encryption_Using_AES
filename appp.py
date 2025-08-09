@@ -3,7 +3,8 @@ gui_with_auth.py
 Requirements:
  pip install cryptography pillow bcrypt
 """
-
+import requests
+from io import BytesIO
 import os
 import json
 import re
@@ -143,19 +144,20 @@ def browse_folder(entry_field):
         entry_field.delete(0, tk.END)
         entry_field.insert(0, folder_path)
 
-def load_logo_image(parent, path="https://github.com/sairajjapu/Folder_Encryption_Using_AES/blob/main/logo.png"):
+def load_logo_image(parent, url="https://cdn-icons-png.flaticon.com/512/6302/6302076.png"):
     try:
-        if os.path.exists(path):
-            logo_img = Image.open(path)
-            logo_img = logo_img.resize((160, 160))
-            photo = ImageTk.PhotoImage(logo_img)
-            label = tk.Label(parent, image=photo, bg=STYLE["bg_color"])
-            label.image = photo
-            label.pack(pady=10)
-        else:
-            tk.Label(parent, text="(Logo not found)", bg=STYLE["bg_color"], fg="gray").pack(pady=10)
-    except Exception:
+        response = requests.get(url)
+        response.raise_for_status()
+        img_data = BytesIO(response.content)
+        logo_img = Image.open(img_data)
+        logo_img = logo_img.resize((160, 160))
+        photo = ImageTk.PhotoImage(logo_img)
+        label = tk.Label(parent, image=photo, bg=STYLE["bg_color"])
+        label.image = photo
+        label.pack(pady=10)
+    except Exception as e:
         tk.Label(parent, text="(Image load error)", bg=STYLE["bg_color"], fg="gray").pack(pady=10)
+        print("Logo load error:", e)
 
 # ---------------- Auth functions ----------------
 def register_user(username, password):
@@ -327,7 +329,7 @@ def main_gui(logged_user):
     load_logo_image(root)
 
     def show_project_info():
-        tmp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".html")
+        tmp_file = tempfile.NamedTemporaryFile(delete=False,prefix="Project Info", suffix=".html")
         tmp_file.write(PROJECT_INFO_HTML.encode("utf-8"))
         tmp_file.close()
         webbrowser.open(f"file://{tmp_file.name}")
