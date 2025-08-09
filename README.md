@@ -43,19 +43,24 @@ User Management: Register and login to access the system securely.
 
 
 <img width="568" height="491" alt="image" src="https://github.com/user-attachments/assets/b9a77039-47d9-4a2f-a3e6-307c3ba3653c" />
+                    
                      **Login page for user authentication.**
 
 
 <img width="568" height="491" alt="image" src="https://github.com/user-attachments/assets/b26a83e1-e38e-4636-a694-167d688bd462" />
+                
                  **Interface to select and encrypt folders.**
 
 
 <img width="568" height="491" alt="image" src="https://github.com/user-attachments/assets/8191e62c-e714-49bf-8897-8820674836f9" />
+               
                  **Enter the folder to be encryptrd and email along with smtp password**
 
 
-<img width="568" height="491" alt="image" src="https://github.com/user-attachments/assets/01f37c7d-96ce-456f-8162-ac1ce51258d7" />
+<img width="779" height="669" alt="image" src="https://github.com/user-attachments/assets/e61505f3-79ce-4778-8987-e7d4c083ad0b" />
+
                   **Sample email showing the generated password.**
+
 
 
 **Security Considerations:**
