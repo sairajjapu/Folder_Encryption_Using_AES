@@ -1,5 +1,8 @@
 {
     "admin": {
         "password": "$2b$12$ghhy0SqR7Z8mKaIzQetBCOqjnVewFp/PYReNt4L9Pj1glXPxP6DZO"
+    },
+    "dhanush": {
+        "password": "$2b$12$JxSJDGSncY.Rwk9.HbTCPeum.2r0y72NV9aHIjbGBPE1rlbWBYGwe"
     }
 }

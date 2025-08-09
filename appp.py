@@ -1,3 +1,9 @@
+"""
+gui_with_auth.py
+Requirements:
+ pip install cryptography pillow bcrypt
+"""
+
 import os
 import json
 import re
@@ -11,6 +17,13 @@ from email.mime.multipart import MIMEMultipart
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
+import random
+import string
+
+def generate_strong_password(length=12):
+    chars = string.ascii_letters + string.digits + "!@#$%^&*()-_=+[]{}|;:,.<>?/`~"
+    password = ''.join(random.choice(chars) for _ in range(length))
+    return password
 
 # ---------------- Config & Paths ----------------
 USERS_FILE = "users.json"
@@ -166,10 +179,8 @@ def validate_user(username, password):
 def encrypt_folder_and_send_key(folder, sender_email, smtp_password, receiver_email):
     if not os.path.isdir(folder):
         raise FileNotFoundError("Folder not found.")
-
     key = Fernet.generate_key()
     fernet = Fernet(key)
-
     for root, _, files in os.walk(folder):
         for fname in files:
             file_path = os.path.join(root, fname)
@@ -180,7 +191,6 @@ def encrypt_folder_and_send_key(folder, sender_email, smtp_password, receiver_em
             enc = fernet.encrypt(data)
             with open(file_path, "wb") as wf:
                 wf.write(enc)
-
     subject = "AES Encryption Key (Folder Encryptor)"
     body = (
         "Hello,\n\n"
@@ -188,25 +198,21 @@ def encrypt_folder_and_send_key(folder, sender_email, smtp_password, receiver_em
         f"{key.decode()}\n\n"
         "Do NOT share this key with others.\n"
     )
-
     msg = MIMEMultipart()
     msg["From"] = sender_email
     msg["To"] = receiver_email
     msg["Subject"] = subject
     msg.attach(MIMEText(body, "plain"))
-
     server = smtplib.SMTP("smtp.gmail.com", 587)
     server.starttls()
     server.login(sender_email, smtp_password)
     server.send_message(msg)
     server.quit()
-
     return key.decode()
 
 def decrypt_folder(folder, key_text):
     if not os.path.isdir(folder):
         raise FileNotFoundError("Folder not found.")
-
     fernet = Fernet(key_text.encode())
     for root, _, files in os.walk(folder):
         for fname in files:
@@ -230,7 +236,6 @@ def open_encrypt_popup(parent):
     popup.geometry("560x360")
     popup.resizable(False, False)
     popup.grab_set()
-
     label_style = {"bg": STYLE["bg_color"], "fg": "#333", "font": STYLE["font_label"]}
     entry_style = {"width": 45, "font": STYLE["font_entry"]}
 
@@ -256,7 +261,6 @@ def open_encrypt_popup(parent):
         sender = sender_entry.get().strip()
         pwd = password_entry.get().strip()
         receiver = receiver_entry.get().strip()
-
         if not all([folder, sender, pwd, receiver]):
             messagebox.showerror("Missing Info", "Please fill all fields.")
             return
@@ -282,7 +286,6 @@ def open_decrypt_popup(parent):
     popup.geometry("520x220")
     popup.resizable(False, False)
     popup.grab_set()
-
     label_style = {"bg": STYLE["bg_color"], "fg": "#333", "font": STYLE["font_label"]}
     entry_style = {"width": 45, "font": STYLE["font_entry"]}
 
@@ -317,7 +320,6 @@ def main_gui(logged_user):
     root.geometry("640x560")
     root.configure(bg=STYLE["bg_color"])
     root.resizable(False, False)
-
     tk.Label(root, text="🔐 Folder Encryption Tool", bg=STYLE["bg_color"], fg="black", font=STYLE["font_header"]).pack(pady=12)
     load_logo_image(root)
 
@@ -338,7 +340,7 @@ def main_gui(logged_user):
 def login_screen():
     login_win = tk.Tk()
     login_win.title("Login or Sign Up")
-    login_win.geometry("380x260")
+    login_win.geometry("380x300")
     login_win.configure(bg=STYLE["bg_color"])
     login_win.resizable(False, False)
 
@@ -349,6 +351,10 @@ def login_screen():
     tk.Label(login_win, text="Password:", bg=STYLE["bg_color"]).pack(pady=(8,0))
     password_entry = tk.Entry(login_win, width=30, show="*")
     password_entry.pack()
+
+    # button frame must be created BEFORE buttons are added
+    btn_frame = tk.Frame(login_win, bg=STYLE["bg_color"])
+    btn_frame.pack(pady=12)
 
     def do_login():
         user = username_entry.get().strip()
@@ -376,10 +382,16 @@ def login_screen():
         except Exception as e:
             messagebox.showerror("Error", f"Registration failed: {e}")
 
-    btn_frame = tk.Frame(login_win, bg=STYLE["bg_color"])
-    btn_frame.pack(pady=12)
+    def fill_random_password():
+        pwd = generate_strong_password()
+        password_entry.delete(0, tk.END)
+        password_entry.insert(0, pwd)
+        messagebox.showinfo("Generated Password", f"Your random password:\n{pwd}\n\nPlease save it securely.")
+
+    # Login, Sign Up and Generate Password buttons
     tk.Button(btn_frame, text="Login", command=do_login, bg="#28a745", fg="white", width=12).grid(row=0, column=0, padx=6)
     tk.Button(btn_frame, text="Sign Up", command=do_signup, bg="#007BFF", fg="white", width=12).grid(row=0, column=1, padx=6)
+    tk.Button(login_win, text="Generate Password", command=fill_random_password, bg="#6f42c1", fg="white", width=20).pack(pady=(6,0))
 
     tk.Label(login_win, text="(We hash your password locally with bcrypt)", bg=STYLE["bg_color"], fg="gray").pack(pady=(6,0))
     login_win.mainloop()
