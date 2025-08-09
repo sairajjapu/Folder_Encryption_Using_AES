@@ -78,12 +78,15 @@ PROJECT_INFO_HTML = """<!DOCTYPE html>
 <body>
     <div class="header">
         <h1>Project Information</h1>
-        <img src="download.png" alt="Logo">
+        <img src="https://suprajatechnologies.com/images/logo.png" alt="Logo">
     </div>
     <p class="note">
         This project was developed by <span class="highlight">Team 21</span> as part of a 
         <span class="highlight">Cyber Security Internship</span>. This project is designed to 
         <span class="highlight">safeguard the user folder details by encrypting it using AES Algorithm.</span>
+		<span>Provides secure login with credential storage in database.Random password generated automatically </span>
+		<span>for each user.Uses AES encryption for high-level security.Email notification to inform user after encryption/decryption.</span>
+		<span>Simple GUI interface for easy use.Designed for personal and enterprise data protection.</span>
     </p>
     <div class="section-title">Project Details</div>
     <table>
@@ -96,9 +99,9 @@ PROJECT_INFO_HTML = """<!DOCTYPE html>
     <div class="section-title">Developer Details</div>
     <table>
         <tr><th>Name</th><th>Employee ID</th><th>Email</th></tr>
-        <tr><td>J.Sai Raj</td><td>ST#IS#0000</td><td>@gmail.com</td></tr>
-        <tr><td>P.Sai Charan</td><td>ST#IS#0000</td><td>@gmail.com</td></tr>
-        <tr><td>Dhanush</td><td>ST#IS#0000</td><td>@gmail.com</td></tr>
+        <tr><td>J.Sai Raj</td><td>ST#IS#7412</td><td>sairajjapu@gmail.com</td></tr>
+        <tr><td>P.Sai Charan</td><td>ST#IS#7424</td><td>22r11a6233@gmail.com</td></tr>
+        <tr><td>Dhanush</td><td>ST#IS#7429</td><td>dhanushreddyg31@gmail.com</td></tr>
         <tr><td>M.Susheel Kumar</td><td>ST#IS#7432</td><td>susheelmemula@gmail.com</td></tr>
     </table>
     <div class="section-title">Company Details</div>
@@ -140,7 +143,7 @@ def browse_folder(entry_field):
         entry_field.delete(0, tk.END)
         entry_field.insert(0, folder_path)
 
-def load_logo_image(parent, path=".\logo.png"):
+def load_logo_image(parent, path="https://github.com/sairajjapu/Folder_Encryption_Using_AES/blob/main/logo.png"):
     try:
         if os.path.exists(path):
             logo_img = Image.open(path)
